@@ -1200,7 +1200,7 @@
               </div>
               <div class="slider-block">
                 <div class="slider-top"><span class="label">Jumlah lilitan (N)</span><span class="val" id="toroida-n-val">300</span></div>
-                <input type="range" id="toroida-n" min="50" max="500" step="10" value="300">
+                <input type="range" id="toroida-n" min="200" max="800" step="10" value="300">
               </div>
               <div class="slider-block">
                 <div class="slider-top"><span class="label">Jari-jari toroida (r)</span><span class="val" id="toroida-r-val">6.0 cm</span></div>
@@ -2876,9 +2876,14 @@
       /* vektor medan B di titik uji — hanya muncul saat kawat berarus */
       if (g > 0.02){
         var tangentAng2 = fieldAngle(state.testAngle);
-        var bStrength = clamp(currentB()/4e-4, 0, 1);
-        var vecLen = 30 + bStrength*36;
-        var needleSz = 12 + bStrength*8;
+        /* Panjang vektor B bergantung jarak: titik terdekat (a = A_MIN) = 2 x titik terjauh (a = A_MAX),
+           makin jauh dari kawat makin pendek. Arus I hanya menskalakan panjang keseluruhan
+           (rasio dekat:jauh tetap 2:1). */
+        var uDist = clamp((radiusToMeters(state.testR) - A_MIN)/(A_MAX - A_MIN), 0, 1); // 0 = terdekat, 1 = terjauh
+        var iNorm = clamp((state.I - 1)/19, 0, 1);
+        var lenFar = 24 + 16*iNorm;                 // panjang di titik terjauh (px)
+        var vecLen = lenFar*(2 - uDist);            // 2*lenFar (dekat) -> lenFar (jauh)
+        var needleSz = 12 + 6*(1 - uDist);
         ctx.save();
         ctx.globalAlpha = g;
         ctx.strokeStyle = FIELD_COLOR_SOFT; ctx.lineWidth = 1.6; ctx.lineCap = "round";
@@ -3573,8 +3578,10 @@
              (bukan lingkaran terpisah/bertumpuk) — seperti kawat kumparan
              pada toroida sungguhan. Ada celah kecil di bagian atas tempat
              kedua ujung kawat (kaki masuk & keluar) menjuntai keluar. ---- */
-      var turns = 22;
-      var loopTangent = (Math.PI*2*rx)/turns*0.42;
+      /* jumlah lilitan yang digambar mengikuti slider N (proporsional:
+         N = 200 -> 20 lilitan, N = 300 -> 27, N = 800 -> 60) */
+      var turns = clamp(Math.round(20 + (state.N-200)/15), 20, 60);
+      var loopTangent = Math.min((Math.PI*2*rx)/turns*0.42, tubeW*0.9); // dibatasi agar lilitan tetap ramping saat N kecil
       var loopRadial = tubeW*0.68;
 
       var gapAngle = -2.35;              // posisi celah tempat kedua kaki kawat keluar
