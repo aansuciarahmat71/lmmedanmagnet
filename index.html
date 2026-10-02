@@ -316,10 +316,9 @@
   @media (max-width:480px){ .stage{grid-template-columns:1fr 1fr; gap:8px;} }
   /* Mode Garis Gaya: panel kontrol lebih panjang, jadi di layar sempit ditumpuk (kanvas di atas) */
   @media (max-width:480px){
-    .mode-panel[data-panel="garis"] .stage{grid-template-columns:1fr; gap:10px;}
-    .mode-panel[data-panel="garis"] .canvas-card{order:1; height:auto;}
-    .mode-panel[data-panel="garis"] .canvas-card .canvas-wrap{flex:none; height:min(62vh,480px); min-height:340px;}
-    .mode-panel[data-panel="garis"] .info-panel{order:2;}
+    .mode-panel[data-panel="garis"] .stage{grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px;}
+    .mode-panel[data-panel="garis"] .canvas-card{order:2; height:100%;}
+    .mode-panel[data-panel="garis"] .info-panel{order:1;}
   }
 
   .canvas-card{
@@ -431,28 +430,28 @@
 
   /* Desktop / tablet lebar */
   @media (min-width:761px){
-    main.fit-garis .mode-panel[data-panel="garis"] .stage{
+    main.fit-garis #view-simulasi .mode-panel .stage{
       height:calc(100vh - 108px); height:calc(100dvh - 108px);
       min-height:240px;
       grid-template-rows:minmax(0,1fr);
     }
-    main.fit-garis .mode-panel[data-panel="garis"] .canvas-card{height:100%; min-height:0;}
-    main.fit-garis .mode-panel[data-panel="garis"] .info-panel{height:100%; min-height:0; overflow-y:auto;}
+    main.fit-garis #view-simulasi .mode-panel .canvas-card{height:100%; min-height:0;}
+    main.fit-garis #view-simulasi .mode-panel .info-panel{height:100%; min-height:0; overflow-y:auto;}
   }
 
-  /* HP (portrait): kanvas di atas mengisi sisa layar, panel kontrol ringkas di bawah */
+  /* HP (portrait): panel parameter di kiri, kanvas di kanan */
   @media (max-width:760px){
     main.fit-garis{padding:10px 10px 10px;}
-    main.fit-garis .mode-panel[data-panel="garis"] .stage{
-      display:flex; flex-direction:column; gap:8px;
+    main.fit-garis #view-simulasi .mode-panel .stage{
+      display:grid; grid-template-columns:minmax(0,2fr) minmax(0,3fr); grid-template-rows:minmax(0,1fr); gap:8px;
       height:calc(100vh - 84px); height:calc(100dvh - 84px);
       min-height:300px;
     }
-    main.fit-garis .mode-panel[data-panel="garis"] .canvas-card{order:1; flex:1 1 0; height:auto; min-height:0;}
-    main.fit-garis .mode-panel[data-panel="garis"] .canvas-card .canvas-wrap{flex:1 1 0; height:auto; min-height:0;}
-    main.fit-garis .mode-panel[data-panel="garis"] .canvas-card .hint-strip{padding:7px 12px; font-size:11.5px; line-height:1.35;}
-    main.fit-garis .mode-panel[data-panel="garis"] .info-panel{
-      order:2; flex:0 0 auto; max-height:42%; overflow-y:auto;
+    main.fit-garis #view-simulasi .mode-panel .canvas-card{order:2; height:100%; min-height:0;}
+    main.fit-garis #view-simulasi .mode-panel .canvas-card .canvas-wrap{flex:1 1 0; height:auto; min-height:0;}
+    main.fit-garis #view-simulasi .mode-panel .canvas-card .hint-strip{padding:7px 12px; font-size:11.5px; line-height:1.35;}
+    main.fit-garis #view-simulasi .mode-panel .info-panel{
+      order:1; height:100%; min-height:0; max-height:none; overflow-y:auto;
       padding:10px 12px; gap:8px;
     }
     main.fit-garis .mode-panel[data-panel="garis"] .info-panel .mode-pills-inline{order:0; padding-bottom:8px;}
@@ -465,11 +464,11 @@
     main.fit-garis .mode-panel[data-panel="garis"] .garis-btns .control-btn{padding:9px 4px; font-size:12px; gap:5px; border-radius:10px;}
   }
 
-  /* HP landscape: kanvas kiri, kontrol kanan (scroll di dalam panel) */
+  /* HP landscape: panel parameter kiri, kanvas kanan (scroll di dalam panel) */
   @media (max-width:760px) and (orientation:landscape) and (max-height:520px){
-    main.fit-garis .mode-panel[data-panel="garis"] .stage{flex-direction:row; min-height:200px;}
-    main.fit-garis .mode-panel[data-panel="garis"] .canvas-card{flex:1 1 0; order:1; height:100%;}
-    main.fit-garis .mode-panel[data-panel="garis"] .info-panel{flex:0 0 44%; max-height:none; height:100%; order:2;}
+    main.fit-garis #view-simulasi .mode-panel .stage{min-height:200px;}
+    main.fit-garis #view-simulasi .mode-panel .canvas-card{order:2; height:100%;}
+    main.fit-garis #view-simulasi .mode-panel .info-panel{max-height:none; height:100%; order:1;}
   }
 
 
@@ -1346,7 +1345,7 @@
   function syncFit(){
     var mainEl = document.querySelector("main");
     var gp = document.querySelector('.mode-panel[data-panel="garis"]');
-    var on = !!(mainEl && gp && views.simulasi.classList.contains("active") && gp.style.display !== "none");
+    var on = !!(mainEl && views.simulasi.classList.contains("active"));
     var kw = !!(mainEl && views.kawat.classList.contains("active"));
     if (mainEl) { mainEl.classList.toggle("fit-garis", on); mainEl.classList.toggle("fit-kawat", kw); }
     document.body.classList.toggle("fit-garis", on);
