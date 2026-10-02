@@ -370,7 +370,7 @@
 
   /* Tombol informasi materi di kanvas (membuka pop-up deskripsi) */
   .info-trigger.materi-btn{
-    position:absolute; left:12px; bottom:12px; z-index:3;
+    position:absolute; right:12px; top:12px; z-index:3;
     width:auto; height:auto; padding:8px 13px; gap:7px;
     display:flex; align-items:center;
     border-radius:100px;
@@ -381,6 +381,13 @@
   }
   .info-trigger.materi-btn svg{width:15px;height:15px; flex:none;}
   .info-trigger.materi-btn:hover{background:var(--accent-soft); transform:none;}
+  /* Sisakan ruang di kanan atas untuk tombol Info Materi agar tidak menimpa badge */
+  .canvas-toolbar{right:134px;}
+  @media (max-width:760px){
+    .canvas-toolbar{right:54px;}
+    .info-trigger.materi-btn{padding:8px;}
+    .info-trigger.materi-btn span{display:none;}
+  }
   #infoModalBody .desc-with-img{display:flex; gap:16px; align-items:flex-start; margin-bottom:12px;}
   #infoModalBody .desc-with-img .desc-text{flex:1 1 55%; min-width:0; display:flex; flex-direction:column; gap:10px;}
   #infoModalBody .desc-with-img .desc-img{flex:1 1 40%; max-width:200px; height:auto; object-fit:contain; border-radius:8px;}
